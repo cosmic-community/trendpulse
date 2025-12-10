@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getArticles, getCategories } from '@/lib/cosmic'
+import { Article, Category } from '@/types'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { objects: articles } = await getArticles(1000)
@@ -7,14 +8,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   const baseUrl = 'https://trendpulsedaily.com'
   
-  const articleUrls = articles.map((article) => ({
+  const articleUrls = articles.map((article: Article) => ({
     url: `${baseUrl}/articles/${article.slug}`,
     lastModified: article.metadata.last_updated || article.metadata.publish_date,
     changeFrequency: 'daily' as const,
     priority: 0.8,
   }))
   
-  const categoryUrls = categories.map((category) => ({
+  const categoryUrls = categories.map((category: Category) => ({
     url: `${baseUrl}/categories/${category.slug}`,
     lastModified: new Date().toISOString(),
     changeFrequency: 'daily' as const,

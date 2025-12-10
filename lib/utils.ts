@@ -37,8 +37,8 @@ export function getRelatedArticles(
   // Sort by publish date and limit
   return related
     .sort((a, b) => {
-      const dateA = new Date(a.metadata.publish_date).getTime()
-      const dateB = new Date(b.metadata.publish_date).getTime()
+      const dateA = a.metadata?.publish_date ? new Date(a.metadata.publish_date).getTime() : 0
+      const dateB = b.metadata?.publish_date ? new Date(b.metadata.publish_date).getTime() : 0
       return dateB - dateA
     })
     .slice(0, limit)

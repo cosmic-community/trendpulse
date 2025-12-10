@@ -5,6 +5,9 @@ import CategoryBadge from './CategoryBadge'
 import TrendingIndicator from './TrendingIndicator'
 
 export default function ArticleCard({ article }: { article: Article }) {
+  // Safe access to first category with null check
+  const firstCategory = article.metadata.categories?.[0]
+  
   return (
     <article className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
       {/* Featured Image */}
@@ -24,8 +27,8 @@ export default function ArticleCard({ article }: { article: Article }) {
       <div className="p-6 flex flex-col flex-grow">
         {/* Categories & Trending */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          {article.metadata.categories && article.metadata.categories.length > 0 && (
-            <CategoryBadge category={article.metadata.categories[0]} size="sm" />
+          {firstCategory && (
+            <CategoryBadge category={firstCategory} size="sm" />
           )}
           {article.metadata.trending_score && article.metadata.trending_score > 80 && (
             <TrendingIndicator score={article.metadata.trending_score} size="sm" />

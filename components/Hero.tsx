@@ -7,6 +7,9 @@ import TrendingIndicator from './TrendingIndicator'
 export default function Hero({ article }: { article: Article }) {
   if (!article) return null
   
+  // Safe access to first category with null check
+  const firstCategory = article.metadata.categories?.[0]
+  
   return (
     <section className="relative w-full h-[600px] lg:h-[700px] overflow-hidden">
       {/* Background Image */}
@@ -26,8 +29,8 @@ export default function Hero({ article }: { article: Article }) {
         <div className="max-w-4xl text-white">
           {/* Categories & Trending */}
           <div className="flex flex-wrap items-center gap-3 mb-4">
-            {article.metadata.categories && article.metadata.categories.length > 0 && (
-              <CategoryBadge category={article.metadata.categories[0]} />
+            {firstCategory && (
+              <CategoryBadge category={firstCategory} />
             )}
             {article.metadata.trending_score && article.metadata.trending_score > 80 && (
               <TrendingIndicator score={article.metadata.trending_score} />

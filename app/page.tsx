@@ -37,7 +37,7 @@ export default async function HomePage() {
           <div className="lg:col-span-8">
             <h2 className="text-3xl font-bold mb-6">Latest Articles</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {gridArticles.map((article) => (
+              {gridArticles.map((article: Article) => (
                 <ArticleCard key={article.id} article={article as Article} />
               ))}
             </div>

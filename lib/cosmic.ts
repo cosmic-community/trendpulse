@@ -1,4 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
+import { Article } from '@/types'
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -23,7 +24,7 @@ export async function getArticles(limit = 12, skip = 0) {
       .depth(1)
     
     // Manual sorting by publish date (newest first)
-    const sortedArticles = response.objects.sort((a, b) => {
+    const sortedArticles = response.objects.sort((a: Article, b: Article) => {
       const dateA = new Date(a.metadata?.publish_date || '').getTime()
       const dateB = new Date(b.metadata?.publish_date || '').getTime()
       return dateB - dateA
@@ -79,7 +80,7 @@ export async function getArticlesByCategory(categorySlug: string, limit = 12) {
     })
     
     // Sort by publish date
-    const sortedArticles = filteredArticles.sort((a, b) => {
+    const sortedArticles = filteredArticles.sort((a: Article, b: Article) => {
       const dateA = new Date(a.metadata?.publish_date || '').getTime()
       const dateB = new Date(b.metadata?.publish_date || '').getTime()
       return dateB - dateA
@@ -155,7 +156,7 @@ export async function getTrendingTopics(limit = 5) {
       .props(['id', 'title', 'slug', 'metadata'])
     
     // Sort by trend score
-    const sortedTopics = response.objects.sort((a, b) => {
+    const sortedTopics = response.objects.sort((a: any, b: any) => {
       const scoreA = a.metadata?.trend_score || 0
       const scoreB = b.metadata?.trend_score || 0
       return scoreB - scoreA
