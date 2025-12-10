@@ -17,8 +17,7 @@ export async function getArticles(limit = 12, skip = 0) {
   try {
     const response = await cosmic.objects
       .find({
-        type: 'articles',
-        'metadata.status.key': 'published'
+        type: 'articles'
       })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
@@ -67,8 +66,7 @@ export async function getArticlesByCategory(categorySlug: string, limit = 12) {
   try {
     const response = await cosmic.objects
       .find({
-        type: 'articles',
-        'metadata.status.key': 'published'
+        type: 'articles'
       })
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)

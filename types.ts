@@ -72,10 +72,6 @@ export interface Article extends CosmicObject {
     publish_date: string
     last_updated?: string
     view_count?: number
-    status?: {
-      key: string
-      value: string
-    }
     agent_id?: string
   }
 }
