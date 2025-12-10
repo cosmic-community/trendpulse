@@ -50,7 +50,7 @@ export function generateTableOfContents(content: string): { id: string; text: st
   
   lines.forEach(line => {
     const match = line.match(/^(#{1,3})\s+(.+)$/)
-    if (match) {
+    if (match && match[1] && match[2]) {
       const level = match[1].length
       const text = match[2].trim()
       const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-')
