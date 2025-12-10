@@ -25,8 +25,15 @@
 
 @layer utilities {
   .article-content {
-    @apply prose prose-lg dark:prose-invert max-w-none;
     font-family: Georgia, ui-serif, serif;
+    max-width: none;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    color: rgb(55, 65, 81);
+  }
+  
+  .dark .article-content {
+    color: rgb(229, 231, 235);
   }
   
   .article-content h1 {
@@ -68,6 +75,14 @@
   
   .article-content pre {
     @apply bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto;
+  }
+  
+  .article-content strong {
+    @apply font-semibold;
+  }
+  
+  .article-content em {
+    @apply italic;
   }
   
   .skeleton {
