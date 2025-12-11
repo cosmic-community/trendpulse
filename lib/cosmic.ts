@@ -1,5 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
-import { Article } from '@/types'
+import { Article, NewsletterSubscriber } from '@/types'
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -182,10 +182,60 @@ export async function incrementViewCount(articleId: string, currentViews: number
   }
 }
 
+// Check if email is already subscribed
+export async function checkExistingSubscriber(email: string): Promise<NewsletterSubscriber | null> {
+  try {
+    const response = await cosmic.objects
+      .find({
+        type: 'newsletter-subscribers'
+      })
+      .props(['id', 'title', 'metadata'])
+    
+    // Find subscriber with matching email
+    const subscriber = response.objects.find(
+      (obj: NewsletterSubscriber) => obj.metadata?.email?.toLowerCase() === email.toLowerCase()
+    )
+    
+    return subscriber || null
+  } catch (error) {
+    if (hasStatus(error) && error.status === 404) {
+      return null
+    }
+    throw error
+  }
+}
+
 // Subscribe to newsletter
 export async function subscribeToNewsletter(email: string) {
   try {
-    await cosmic.objects.insertOne({
+    // Check if email already exists
+    const existingSubscriber = await checkExistingSubscriber(email)
+    
+    if (existingSubscriber) {
+      // Check if subscriber is still active
+      if (existingSubscriber.metadata?.active) {
+        return { 
+          success: false, 
+          error: 'This email is already subscribed to our newsletter.',
+          alreadySubscribed: true 
+        }
+      } else {
+        // Reactivate inactive subscriber
+        await cosmic.objects.updateOne(existingSubscriber.id, {
+          metadata: {
+            active: true,
+            resubscribed_at: new Date().toISOString()
+          }
+        })
+        return { 
+          success: true, 
+          reactivated: true 
+        }
+      }
+    }
+    
+    // Create new subscriber
+    const result = await cosmic.objects.insertOne({
       type: 'newsletter-subscribers',
       title: email,
       metadata: {
@@ -194,9 +244,37 @@ export async function subscribeToNewsletter(email: string) {
         active: true
       }
     })
-    return { success: true }
+    
+    return { 
+      success: true, 
+      subscriberId: result.object.id 
+    }
   } catch (error) {
     console.error('Failed to subscribe to newsletter:', error)
-    return { success: false, error: 'Failed to subscribe' }
+    return { 
+      success: false, 
+      error: 'Failed to subscribe. Please try again later.' 
+    }
+  }
+}
+
+// Get all active subscribers (for newsletter sending)
+export async function getActiveSubscribers(): Promise<NewsletterSubscriber[]> {
+  try {
+    const response = await cosmic.objects
+      .find({
+        type: 'newsletter-subscribers'
+      })
+      .props(['id', 'title', 'metadata'])
+    
+    // Filter for active subscribers only
+    return response.objects.filter(
+      (subscriber: NewsletterSubscriber) => subscriber.metadata?.active === true
+    ) as NewsletterSubscriber[]
+  } catch (error) {
+    if (hasStatus(error) && error.status === 404) {
+      return []
+    }
+    throw new Error('Failed to fetch subscribers')
   }
 }
