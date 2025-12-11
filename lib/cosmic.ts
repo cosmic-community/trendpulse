@@ -1,5 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
-import { Article, Category, Tag } from '@/types'
+import { Article, Category, Tag, TrendingTopic } from '@/types'
 
 const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -189,7 +189,7 @@ export async function getArticlesByCategory(categorySlug: string) {
     // Filter articles that have the specified category
     const filteredArticles = response.objects.filter((article: Article) => {
       const categories = article.metadata?.categories || []
-      return categories.some((cat: { slug: string }) => cat.slug === categorySlug)
+      return categories.some((cat: Category) => cat.slug === categorySlug)
     })
 
     // Manual sorting by publish_date (descending)
@@ -219,8 +219,8 @@ export async function getTrendingTopics(limit = 5) {
       .depth(0)
       .limit(limit)
 
-    // Manual sorting by trend_score (descending)
-    const sortedTopics = response.objects.sort((a: Article, b: Article) => {
+    // Manual sorting by trend_score (descending) - Changed: Fixed property name to trending_score
+    const sortedTopics = response.objects.sort((a: TrendingTopic, b: TrendingTopic) => {
       const scoreA = a.metadata?.trend_score || 0
       const scoreB = b.metadata?.trend_score || 0
       return scoreB - scoreA
@@ -274,14 +274,14 @@ export async function getRelatedArticles(articleId: string, categories: string[]
         let relevanceScore = 0
         
         // Increase score for matching categories (higher weight)
-        articleCategories.forEach((cat: { slug: string }) => {
+        articleCategories.forEach((cat: Category) => {
           if (categories.includes(cat.slug)) {
             relevanceScore += 2
           }
         })
         
         // Increase score for matching tags
-        articleTags.forEach((tag: { slug: string }) => {
+        articleTags.forEach((tag: Tag) => {
           if (tags.includes(tag.slug)) {
             relevanceScore += 1
           }
