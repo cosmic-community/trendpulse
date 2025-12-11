@@ -32,8 +32,8 @@ export async function subscribeToNewsletter(email: string) {
     if (existingSubscribers.objects && existingSubscribers.objects.length > 0) {
       const subscriber = existingSubscribers.objects[0]
       
-      // Check if already active
-      if (subscriber.metadata?.status === 'Active') {
+      // Check if already active (using the 'active' boolean field)
+      if (subscriber.metadata?.active === true) {
         return {
           success: false,
           alreadySubscribed: true,
@@ -41,12 +41,12 @@ export async function subscribeToNewsletter(email: string) {
         }
       }
 
-      // Reactivate if unsubscribed
-      if (subscriber.metadata?.status === 'Unsubscribed') {
+      // Reactivate if inactive/unsubscribed
+      if (subscriber.metadata?.active === false) {
         await cosmic.objects.updateOne(subscriber.id, {
           metadata: {
-            status: 'Active',
-            resubscribed_at: new Date().toISOString(),
+            active: true,
+            resubscribed_at: new Date().toISOString().split('T')[0], // YYYY-MM-DD format
           },
         })
 
@@ -57,15 +57,14 @@ export async function subscribeToNewsletter(email: string) {
       }
     }
 
-    // Create new subscriber
+    // Create new subscriber with proper field names matching the object type
     const result = await cosmic.objects.insertOne({
       title: email,
       type: 'newsletter-subscribers',
       metadata: {
         email: email,
-        status: 'Active',
-        subscribed_at: new Date().toISOString(),
-        source: 'website',
+        subscribed_at: new Date().toISOString().split('T')[0], // YYYY-MM-DD format for date field
+        active: true, // Boolean value for switch field
       },
     })
 
