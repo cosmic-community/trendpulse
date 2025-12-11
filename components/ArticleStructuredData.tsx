@@ -1,45 +1,88 @@
-import { Article } from '@/types'
-
 interface ArticleStructuredDataProps {
-  article: Article
+  title: string
+  description: string
+  publishDate: string
+  modifiedDate?: string
+  imageUrl?: string
+  authorName?: string
+  categories?: string[]
+  url: string
 }
 
-export default function ArticleStructuredData({ article }: ArticleStructuredDataProps) {
-  const structuredData = {
+export default function ArticleStructuredData({
+  title,
+  description,
+  publishDate,
+  modifiedDate,
+  imageUrl,
+  authorName = 'TrendPulse Daily',
+  categories = [],
+  url,
+}: ArticleStructuredDataProps) {
+  const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
-    headline: article.title,
-    description: article.metadata.excerpt,
-    image: article.metadata.featured_image ? [
-      `${article.metadata.featured_image.imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`
-    ] : [],
-    datePublished: article.metadata.publish_date,
-    dateModified: article.metadata.last_updated || article.metadata.publish_date,
+    headline: title,
+    description: description,
+    image: imageUrl || 'https://trendpulse-daily.com/default-article-image.png',
+    datePublished: publishDate,
+    dateModified: modifiedDate || publishDate,
     author: {
       '@type': 'Organization',
-      name: 'TrendPulse Daily',
-      url: 'https://trendpulsedaily.com'
+      name: authorName,
+      url: 'https://trendpulse-daily.com',
     },
     publisher: {
       '@type': 'Organization',
       name: 'TrendPulse Daily',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://trendpulsedaily.com/logo.png'
-      }
+        url: 'https://trendpulse-daily.com/logo.png',
+      },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://trendpulsedaily.com/articles/${article.slug}`
+      '@id': url,
     },
-    articleSection: article.metadata.categories?.[0]?.title || 'Technology',
-    keywords: article.metadata.tags?.map(tag => tag.title).join(', ') || 'technology, AI, news',
+    articleSection: categories.join(', '),
+    keywords: categories.join(', '),
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://trendpulse-daily.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Articles',
+        item: 'https://trendpulse-daily.com/articles',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: title,
+        item: url,
+      },
+    ],
   }
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
   )
 }

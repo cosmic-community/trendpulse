@@ -20,8 +20,9 @@ export async function sendWelcomeEmail({ email, subscriberName }: WelcomeEmailPr
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'TrendPulse Daily <newsletter@trendpulse-daily.com>',
+      from: 'TrendPulse Daily <tony@cosmicjs.com>',
       to: [email],
+      replyTo: 'tony@cosmicjs.com',
       subject: '🎉 Welcome to TrendPulse Daily!',
       html: generateWelcomeEmailHTML(firstName),
     })
@@ -217,8 +218,9 @@ export async function sendWeeklyNewsletter(
 
   try {
     const { data, error } = await resend.emails.send({
-      from: 'TrendPulse Daily <newsletter@trendpulse-daily.com>',
+      from: 'TrendPulse Daily <tony@cosmicjs.com>',
       to: [email],
+      replyTo: 'tony@cosmicjs.com',
       subject: content.subject,
       html: generateNewsletterHTML(content),
     })
