@@ -1,59 +1,44 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { subscribeToNewsletter } from '@/lib/cosmic'
-import { validateEmail } from '@/lib/utils'
 import { sendWelcomeEmail } from '@/lib/email'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json()
-    
-    // Validate email format
-    if (!email || !validateEmail(email)) {
+
+    // Validate email
+    if (!email || !email.includes('@')) {
       return NextResponse.json(
-        { success: false, error: 'Please enter a valid email address' },
+        { error: 'Please provide a valid email address' },
         { status: 400 }
       )
     }
-    
+
     // Subscribe to newsletter in Cosmic CMS
     const result = await subscribeToNewsletter(email)
-    
+
     if (!result.success) {
-      // Check if already subscribed
-      if (result.alreadySubscribed) {
-        return NextResponse.json(
-          { success: false, error: result.error, alreadySubscribed: true },
-          { status: 409 }
-        )
-      }
-      
       return NextResponse.json(
-        { success: false, error: result.error || 'Failed to subscribe' },
-        { status: 500 }
+        { error: result.error || 'Failed to subscribe' },
+        { status: result.alreadySubscribed ? 400 : 500 }
       )
     }
-    
-    // Send welcome email via Resend (only if configured)
-    const emailResult = await sendWelcomeEmail({ email })
-    
-    // Return success even if email fails (subscriber is still saved)
-    if (result.reactivated) {
-      return NextResponse.json({ 
-        success: true, 
-        message: 'Welcome back! Your subscription has been reactivated.',
-        emailSent: emailResult.success && !emailResult.skipped
-      })
+
+    // Send welcome email via Resend (only for new subscribers, not reactivations)
+    if (!result.reactivated && process.env.RESEND_API_KEY) {
+      await sendWelcomeEmail({ email })
     }
-    
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Successfully subscribed! Check your email for a welcome message.',
-      emailSent: emailResult.success && !emailResult.skipped
+
+    return NextResponse.json({
+      success: true,
+      message: result.reactivated 
+        ? 'Welcome back! Your subscription has been reactivated.' 
+        : 'Thanks for subscribing! Check your email for a welcome message.',
     })
   } catch (error) {
-    console.error('Newsletter subscription error:', error)
+    console.error('Newsletter API error:', error)
     return NextResponse.json(
-      { success: false, error: 'An unexpected error occurred. Please try again.' },
+      { error: 'Something went wrong. Please try again later.' },
       { status: 500 }
     )
   }

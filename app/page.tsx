@@ -18,7 +18,11 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const { objects: articles, total } = await getArticles(13)
+  // Changed: Fixed article fetching to properly destructure the response
+  const articlesResponse = await getArticles(13)
+  const articles = articlesResponse.objects
+  const total = articlesResponse.total
+  
   const categories = await getCategories()
   const trendingTopics = await getTrendingTopics(5)
   

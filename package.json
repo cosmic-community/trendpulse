@@ -8,30 +8,23 @@
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "prebuild": "bun run type-check",
-    "postbuild": "node scripts/inject-console-capture.js"
+    "prebuild": "bun run type-check"
   },
   "dependencies": {
+    "@cosmicjs/sdk": "^1.5.6",
     "next": "16.0.7",
+    "next-themes": "^0.4.4",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
-    "@cosmicjs/sdk": "^1.5.6",
-    "lucide-react": "^0.468.0",
-    "react-markdown": "^9.0.1",
-    "remark-gfm": "^4.0.0",
     "resend": "^4.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
-    "typescript": "^5.0.0",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "16.0.7",
-    "tailwindcss": "^3.4.0",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
-    "glob": "^10.3.10",
-    "@tailwindcss/typography": "^0.5.10"
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }

@@ -1,296 +1,164 @@
 import { Resend } from 'resend'
 
-// Initialize Resend client (only if API key is available)
-const resendApiKey = process.env.RESEND_API_KEY
-export const resend = resendApiKey ? new Resend(resendApiKey) : null
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 interface WelcomeEmailProps {
   email: string
-  subscriberName?: string
 }
 
-export async function sendWelcomeEmail({ email, subscriberName }: WelcomeEmailProps) {
-  // If Resend is not configured, skip email sending
-  if (!resend) {
-    console.log('Resend not configured - skipping welcome email')
-    return { success: true, skipped: true }
-  }
-
-  const firstName = subscriberName?.split(' ')[0] || 'there'
-
+export async function sendWelcomeEmail({ email }: WelcomeEmailProps) {
   try {
     const { data, error } = await resend.emails.send({
       from: 'TrendPulse Daily <tony@cosmicjs.com>',
-      to: [email],
+      to: email,
       replyTo: 'tony@cosmicjs.com',
-      subject: '🎉 Welcome to TrendPulse Daily!',
-      html: generateWelcomeEmailHTML(firstName),
+      subject: '🎉 Welcome to TrendPulse Daily - Your AI Tech News Source',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Welcome to TrendPulse Daily</title>
+          </head>
+          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
+            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td align="center" style="padding: 40px 0;">
+                  <table role="presentation" style="width: 600px; max-width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <!-- Header -->
+                    <tr>
+                      <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+                        <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;">
+                          🚀 TrendPulse Daily
+                        </h1>
+                        <p style="margin: 10px 0 0; color: #e0e7ff; font-size: 16px;">
+                          AI-Powered Tech News You Can Trust
+                        </p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                      <td style="padding: 40px 30px;">
+                        <h2 style="margin: 0 0 20px; color: #1f2937; font-size: 24px; font-weight: 600;">
+                          Welcome to the Community! 🎉
+                        </h2>
+                        
+                        <p style="margin: 0 0 20px; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                          Thank you for subscribing to TrendPulse Daily! You've just joined 10,000+ tech enthusiasts who stay ahead of the curve.
+                        </p>
+                        
+                        <p style="margin: 0 0 20px; color: #4b5563; font-size: 16px; line-height: 1.6;">
+                          Here's what you can expect from us:
+                        </p>
+                        
+                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
+                          <tr>
+                            <td style="padding: 15px; background-color: #f3f4f6; border-radius: 8px; margin-bottom: 10px;">
+                              <div style="display: flex; align-items: start;">
+                                <span style="font-size: 24px; margin-right: 15px;">📰</span>
+                                <div>
+                                  <strong style="color: #1f2937; font-size: 16px;">Daily AI-Curated News</strong>
+                                  <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Breaking tech stories analyzed and summarized by AI</p>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 15px; background-color: #f3f4f6; border-radius: 8px; margin-bottom: 10px;">
+                              <div style="display: flex; align-items: start;">
+                                <span style="font-size: 24px; margin-right: 15px;">📊</span>
+                                <div>
+                                  <strong style="color: #1f2937; font-size: 16px;">Weekly Roundups</strong>
+                                  <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Comprehensive summaries of the week's top stories</p>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 15px; background-color: #f3f4f6; border-radius: 8px;">
+                              <div style="display: flex; align-items: start;">
+                                <span style="font-size: 24px; margin-right: 15px;">🔥</span>
+                                <div>
+                                  <strong style="color: #1f2937; font-size: 16px;">Trending Topics</strong>
+                                  <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Real-time tracking of emerging tech trends</p>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        </table>
+                        
+                        <div style="text-align: center; margin: 30px 0;">
+                          <a href="https://trendpulsedaily.com" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 16px;">
+                            Start Reading Now →
+                          </a>
+                        </div>
+                        
+                        <p style="margin: 30px 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+                          Questions? Just reply to this email - we'd love to hear from you!
+                        </p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                      <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb;">
+                        <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px; text-align: center;">
+                          TrendPulse Daily - AI-Powered Tech News
+                        </p>
+                        <p style="margin: 0 0 10px; color: #9ca3af; font-size: 12px; text-align: center;">
+                          You're receiving this because you subscribed to our newsletter at trendpulsedaily.com
+                        </p>
+                        <p style="margin: 0; text-align: center;">
+                          <a href="https://trendpulsedaily.com" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Visit Website</a>
+                          <span style="color: #d1d5db;">|</span>
+                          <a href="https://trendpulsedaily.com/newsletter" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Manage Preferences</a>
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>
+      `,
+      text: `
+Welcome to TrendPulse Daily! 🎉
+
+Thank you for subscribing! You've just joined 10,000+ tech enthusiasts who stay ahead of the curve.
+
+Here's what you can expect:
+
+📰 Daily AI-Curated News
+Breaking tech stories analyzed and summarized by AI
+
+📊 Weekly Roundups
+Comprehensive summaries of the week's top stories
+
+🔥 Trending Topics
+Real-time tracking of emerging tech trends
+
+Start reading: https://trendpulsedaily.com
+
+Questions? Just reply to this email - we'd love to hear from you!
+
+---
+TrendPulse Daily - AI-Powered Tech News
+Visit Website: https://trendpulsedaily.com
+Manage Preferences: https://trendpulsedaily.com/newsletter
+      `,
     })
 
     if (error) {
-      console.error('Resend error:', error)
-      return { success: false, error: error.message }
+      console.error('Resend email error:', error)
+      return { success: false, error }
     }
 
     return { success: true, data }
   } catch (error) {
     console.error('Failed to send welcome email:', error)
-    return { success: false, error: 'Failed to send email' }
+    return { success: false, error }
   }
-}
-
-function generateWelcomeEmailHTML(firstName: string): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Welcome to TrendPulse Daily</title>
-      <style>
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-          background-color: #f3f4f6;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          background-color: #ffffff;
-        }
-        .header {
-          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-          padding: 40px 30px;
-          text-align: center;
-        }
-        .logo {
-          color: #ffffff;
-          font-size: 28px;
-          font-weight: bold;
-          margin: 0;
-        }
-        .content {
-          padding: 40px 30px;
-          color: #374151;
-          line-height: 1.6;
-        }
-        .content h1 {
-          color: #111827;
-          font-size: 24px;
-          margin: 0 0 20px 0;
-        }
-        .content p {
-          margin: 0 0 16px 0;
-        }
-        .benefits {
-          background-color: #f9fafb;
-          border-left: 4px solid #3b82f6;
-          padding: 20px;
-          margin: 30px 0;
-        }
-        .benefits h2 {
-          color: #111827;
-          font-size: 18px;
-          margin: 0 0 16px 0;
-        }
-        .benefits ul {
-          margin: 0;
-          padding-left: 20px;
-        }
-        .benefits li {
-          margin-bottom: 8px;
-        }
-        .cta {
-          text-align: center;
-          margin: 30px 0;
-        }
-        .button {
-          display: inline-block;
-          background-color: #3b82f6;
-          color: #ffffff;
-          text-decoration: none;
-          padding: 14px 32px;
-          border-radius: 8px;
-          font-weight: 600;
-          font-size: 16px;
-        }
-        .footer {
-          background-color: #f9fafb;
-          padding: 30px;
-          text-align: center;
-          color: #6b7280;
-          font-size: 14px;
-          border-top: 1px solid #e5e7eb;
-        }
-        .footer a {
-          color: #3b82f6;
-          text-decoration: none;
-        }
-        .social-links {
-          margin: 20px 0;
-        }
-        .social-links a {
-          display: inline-block;
-          margin: 0 10px;
-          color: #6b7280;
-          text-decoration: none;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1 class="logo">📈 TrendPulse Daily</h1>
-          <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 16px;">AI-Curated Tech News & Insights</p>
-        </div>
-        
-        <div class="content">
-          <h1>Welcome aboard, ${firstName}! 🎉</h1>
-          
-          <p>Thank you for subscribing to TrendPulse Daily! You've just joined thousands of tech professionals, entrepreneurs, and AI enthusiasts who stay ahead of the curve with our AI-curated news.</p>
-          
-          <div class="benefits">
-            <h2>Here's what you can expect:</h2>
-            <ul>
-              <li><strong>Weekly Roundup:</strong> Top 10 most important tech stories delivered every Sunday</li>
-              <li><strong>Trending Topics:</strong> AI-detected emerging trends in technology and business</li>
-              <li><strong>Deep Dives:</strong> Comprehensive analysis of major developments</li>
-              <li><strong>Exclusive Insights:</strong> Newsletter-only analysis and commentary</li>
-            </ul>
-          </div>
-          
-          <p>Your first newsletter will arrive this Sunday. In the meantime, explore our latest articles:</p>
-          
-          <div class="cta">
-            <a href="https://trendpulse-daily.com" class="button">Browse Latest Articles</a>
-          </div>
-          
-          <p style="margin-top: 30px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
-            <strong>Why TrendPulse Daily?</strong><br>
-            We use advanced AI to scan thousands of sources daily, identifying the most important tech news and trends. Our algorithms ensure you get signal, not noise.
-          </p>
-        </div>
-        
-        <div class="footer">
-          <div class="social-links">
-            <a href="https://twitter.com/trendpulse">Twitter</a>
-            <a href="https://linkedin.com/company/trendpulse">LinkedIn</a>
-            <a href="https://github.com/trendpulse">GitHub</a>
-          </div>
-          
-          <p>
-            <strong>TrendPulse Daily</strong><br>
-            AI-Curated Tech News & Insights
-          </p>
-          
-          <p style="margin-top: 20px;">
-            <a href="https://trendpulse-daily.com/newsletter">Manage Preferences</a> · 
-            <a href="{{unsubscribe_url}}">Unsubscribe</a>
-          </p>
-          
-          <p style="margin-top: 20px; color: #9ca3af; font-size: 12px;">
-            You're receiving this email because you subscribed to TrendPulse Daily.<br>
-            We respect your privacy and will never share your email address.
-          </p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `
-}
-
-export async function sendWeeklyNewsletter(
-  email: string,
-  content: {
-    subject: string
-    articles: Array<{
-      title: string
-      excerpt: string
-      url: string
-    }>
-  }
-) {
-  if (!resend) {
-    console.log('Resend not configured - skipping newsletter')
-    return { success: true, skipped: true }
-  }
-
-  try {
-    const { data, error } = await resend.emails.send({
-      from: 'TrendPulse Daily <tony@cosmicjs.com>',
-      to: [email],
-      replyTo: 'tony@cosmicjs.com',
-      subject: content.subject,
-      html: generateNewsletterHTML(content),
-    })
-
-    if (error) {
-      console.error('Resend error:', error)
-      return { success: false, error: error.message }
-    }
-
-    return { success: true, data }
-  } catch (error) {
-    console.error('Failed to send newsletter:', error)
-    return { success: false, error: 'Failed to send newsletter' }
-  }
-}
-
-function generateNewsletterHTML(content: {
-  subject: string
-  articles: Array<{
-    title: string
-    excerpt: string
-    url: string
-  }>
-}): string {
-  const articlesHTML = content.articles
-    .map(
-      (article) => `
-      <div style="margin-bottom: 30px; padding-bottom: 30px; border-bottom: 1px solid #e5e7eb;">
-        <h3 style="margin: 0 0 10px 0; color: #111827; font-size: 20px;">
-          <a href="${article.url}" style="color: #111827; text-decoration: none;">${article.title}</a>
-        </h3>
-        <p style="margin: 0 0 10px 0; color: #6b7280; line-height: 1.6;">${article.excerpt}</p>
-        <a href="${article.url}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">Read more →</a>
-      </div>
-    `
-    )
-    .join('')
-
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${content.subject}</title>
-    </head>
-    <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f3f4f6;">
-      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
-        <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 40px 30px; text-align: center;">
-          <h1 style="color: #ffffff; font-size: 28px; font-weight: bold; margin: 0;">📈 TrendPulse Daily</h1>
-        </div>
-        
-        <div style="padding: 40px 30px; color: #374151; line-height: 1.6;">
-          <h2 style="color: #111827; font-size: 24px; margin: 0 0 30px 0;">${content.subject}</h2>
-          
-          ${articlesHTML}
-          
-          <div style="text-align: center; margin-top: 40px; padding-top: 40px; border-top: 2px solid #e5e7eb;">
-            <a href="https://trendpulse-daily.com" style="display: inline-block; background-color: #3b82f6; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px;">View All Articles</a>
-          </div>
-        </div>
-        
-        <div style="background-color: #f9fafb; padding: 30px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb;">
-          <p>
-            <a href="https://trendpulse-daily.com/newsletter" style="color: #3b82f6; text-decoration: none;">Manage Preferences</a> · 
-            <a href="{{unsubscribe_url}}" style="color: #3b82f6; text-decoration: none;">Unsubscribe</a>
-          </p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `
 }

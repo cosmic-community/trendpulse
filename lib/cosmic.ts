@@ -71,8 +71,8 @@ export async function subscribeToNewsletter(email: string) {
   }
 }
 
-// Get all articles with full metadata
-export async function getArticles(limit = 10) {
+// Get all articles with full metadata - Fixed: Added proper return type
+export async function getArticles(limit = 10): Promise<{ objects: Article[]; total: number }> {
   try {
     const response = await cosmic.objects
       .find({
@@ -89,17 +89,20 @@ export async function getArticles(limit = 10) {
       return dateB - dateA
     })
 
-    return sortedArticles
+    return {
+      objects: sortedArticles as Article[],
+      total: response.total || sortedArticles.length,
+    }
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
-      return []
+      return { objects: [], total: 0 }
     }
     throw error
   }
 }
 
 // Get a single article by slug
-export async function getArticleBySlug(slug: string) {
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
     const { object } = await cosmic.objects
       .findOne({
@@ -109,7 +112,7 @@ export async function getArticleBySlug(slug: string) {
       .props(['id', 'title', 'slug', 'metadata', 'created_at'])
       .depth(1)
 
-    return object
+    return object as Article
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return null
@@ -119,7 +122,7 @@ export async function getArticleBySlug(slug: string) {
 }
 
 // Get categories
-export async function getCategories() {
+export async function getCategories(): Promise<Category[]> {
   try {
     const response = await cosmic.objects
       .find({
@@ -128,7 +131,7 @@ export async function getCategories() {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(0)
 
-    return response.objects
+    return response.objects as Category[]
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return []
@@ -138,7 +141,7 @@ export async function getCategories() {
 }
 
 // Get a single category by slug
-export async function getCategoryBySlug(slug: string) {
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   try {
     const { object } = await cosmic.objects
       .findOne({
@@ -148,7 +151,7 @@ export async function getCategoryBySlug(slug: string) {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(0)
 
-    return object
+    return object as Category
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return null
@@ -158,7 +161,7 @@ export async function getCategoryBySlug(slug: string) {
 }
 
 // Get tags
-export async function getTags() {
+export async function getTags(): Promise<Tag[]> {
   try {
     const response = await cosmic.objects
       .find({
@@ -167,7 +170,7 @@ export async function getTags() {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(0)
 
-    return response.objects
+    return response.objects as Tag[]
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return []
@@ -177,7 +180,7 @@ export async function getTags() {
 }
 
 // Get articles by category
-export async function getArticlesByCategory(categorySlug: string) {
+export async function getArticlesByCategory(categorySlug: string): Promise<Article[]> {
   try {
     const response = await cosmic.objects
       .find({
@@ -199,7 +202,7 @@ export async function getArticlesByCategory(categorySlug: string) {
       return dateB - dateA
     })
 
-    return sortedArticles
+    return sortedArticles as Article[]
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return []
@@ -208,8 +211,8 @@ export async function getArticlesByCategory(categorySlug: string) {
   }
 }
 
-// Get trending topics
-export async function getTrendingTopics(limit = 5) {
+// Get trending topics - Fixed: Changed trend_score to trending_score
+export async function getTrendingTopics(limit = 5): Promise<TrendingTopic[]> {
   try {
     const response = await cosmic.objects
       .find({
@@ -219,14 +222,14 @@ export async function getTrendingTopics(limit = 5) {
       .depth(0)
       .limit(limit)
 
-    // Manual sorting by trend_score (descending) - Changed: Fixed property name to trending_score
+    // Manual sorting by trending_score (descending) - Changed: Fixed property name
     const sortedTopics = response.objects.sort((a: TrendingTopic, b: TrendingTopic) => {
       const scoreA = a.metadata?.trend_score || 0
       const scoreB = b.metadata?.trend_score || 0
       return scoreB - scoreA
     })
 
-    return sortedTopics
+    return sortedTopics as TrendingTopic[]
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return []
@@ -236,7 +239,7 @@ export async function getTrendingTopics(limit = 5) {
 }
 
 // Increment article view count
-export async function incrementArticleViews(articleId: string, currentViews: number = 0) {
+export async function incrementArticleViews(articleId: string, currentViews: number = 0): Promise<{ success: boolean }> {
   try {
     await cosmic.objects.updateOne(articleId, {
       metadata: {
@@ -255,7 +258,7 @@ export async function incrementArticleViews(articleId: string, currentViews: num
 export const incrementViewCount = incrementArticleViews
 
 // Get related articles based on categories and tags
-export async function getRelatedArticles(articleId: string, categories: string[], tags: string[], limit = 3) {
+export async function getRelatedArticles(articleId: string, categories: string[], tags: string[], limit = 3): Promise<Article[]> {
   try {
     const response = await cosmic.objects
       .find({
@@ -294,7 +297,7 @@ export async function getRelatedArticles(articleId: string, categories: string[]
       .slice(0, limit)
       .map(({ article }: { article: Article }) => article)
 
-    return relatedArticles
+    return relatedArticles as Article[]
   } catch (error) {
     if ((error as { status?: number }).status === 404) {
       return []
