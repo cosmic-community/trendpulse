@@ -10,6 +10,9 @@ import ShareButtons from '@/components/ShareButtons'
 import RelatedArticles from '@/components/RelatedArticles'
 import ViewCounter from '@/components/ViewCounter'
 import TableOfContents from '@/components/TableOfContents'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import ArticleStructuredData from '@/components/ArticleStructuredData'
+import NewsletterInlineForm from '@/components/NewsletterInlineForm'
 import { Metadata } from 'next'
 
 export const revalidate = 3600
@@ -29,21 +32,40 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
   
   const typedArticle = article as Article
+  const articleUrl = `https://trendpulsedaily.com/articles/${slug}`
   
   return {
-    title: typedArticle.metadata.seo_meta_title || typedArticle.title,
+    title: `${typedArticle.metadata.seo_meta_title || typedArticle.title} | TrendPulse Daily`,
     description: typedArticle.metadata.seo_meta_description || typedArticle.metadata.excerpt,
+    keywords: typedArticle.metadata.tags?.map(tag => tag.title).join(', ') || 'AI news, tech news, technology',
+    authors: [{ name: 'TrendPulse Daily' }],
     openGraph: {
       title: typedArticle.metadata.seo_meta_title || typedArticle.title,
       description: typedArticle.metadata.seo_meta_description || typedArticle.metadata.excerpt,
       type: 'article',
       publishedTime: typedArticle.metadata.publish_date,
+      modifiedTime: typedArticle.metadata.last_updated,
       authors: ['TrendPulse Daily'],
+      url: articleUrl,
       images: typedArticle.metadata.featured_image ? [
         {
           url: `${typedArticle.metadata.featured_image.imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`,
+          width: 1200,
+          height: 630,
+          alt: typedArticle.title,
         }
       ] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: typedArticle.metadata.seo_meta_title || typedArticle.title,
+      description: typedArticle.metadata.seo_meta_description || typedArticle.metadata.excerpt,
+      images: typedArticle.metadata.featured_image ? [
+        `${typedArticle.metadata.featured_image.imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`
+      ] : [],
+    },
+    alternates: {
+      canonical: articleUrl,
     },
   }
 }
@@ -57,14 +79,28 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
   
   const typedArticle = article as Article
-  const { objects: allArticles } = await getArticles(100)
-  const relatedArticles = getRelatedArticles(typedArticle, allArticles as Article[], 4)
+  // Changed: Fixed to properly destructure the response
+  const allArticlesResponse = await getArticles(100)
+  const relatedArticles = getRelatedArticles(typedArticle, allArticlesResponse.objects, 4)
   const readingTime = calculateReadingTime(typedArticle.metadata.content || '')
   const toc = generateTableOfContents(typedArticle.metadata.content || '')
+  const articleUrl = `https://trendpulsedaily.com/articles/${slug}`
   
   return (
     <article className="min-h-screen bg-white dark:bg-dark-bg">
+      <ArticleStructuredData article={typedArticle} />
       <ViewCounter articleId={typedArticle.id} initialViews={typedArticle.metadata.view_count || 0} />
+      
+      {/* Breadcrumbs */}
+      <div className="container mx-auto px-4 pt-6">
+        <Breadcrumbs 
+          items={[
+            { label: 'Home', href: '/' },
+            { label: typedArticle.metadata.categories?.[0]?.title || 'Articles', href: typedArticle.metadata.categories?.[0]?.slug ? `/categories/${typedArticle.metadata.categories[0].slug}` : '/articles' },
+            { label: typedArticle.title, href: `/articles/${slug}` },
+          ]}
+        />
+      </div>
       
       {/* Featured Image */}
       {typedArticle.metadata.featured_image && (
@@ -104,7 +140,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             
             {/* Meta Info */}
             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-              <span>{formatDate(typedArticle.metadata.publish_date)}</span>
+              <time dateTime={typedArticle.metadata.publish_date}>
+                {formatDate(typedArticle.metadata.publish_date)}
+              </time>
               <span>•</span>
               <span>{readingTime} min read</span>
               {typedArticle.metadata.view_count !== undefined && (
@@ -129,7 +167,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {/* Share Buttons */}
             <div className="mt-6">
               <ShareButtons 
-                url={`https://trendpulsedaily.com/articles/${typedArticle.slug}`}
+                url={articleUrl}
                 title={typedArticle.title}
               />
             </div>
@@ -143,18 +181,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {/* Article Content */}
           <ArticleContent content={typedArticle.metadata.content || ''} />
           
+          {/* Mid-article Newsletter CTA */}
+          <div className="my-12">
+            <NewsletterInlineForm />
+          </div>
+          
           {/* External Sources */}
           {typedArticle.metadata.external_sources && typedArticle.metadata.external_sources.length > 0 && (
             <div className="mt-12 p-6 bg-gray-50 dark:bg-dark-surface rounded-xl">
-              <h3 className="text-xl font-bold mb-4">External Sources</h3>
+              <h3 className="text-xl font-bold mb-4">Sources & References</h3>
               <ul className="space-y-2">
                 {typedArticle.metadata.external_sources.map((source, index) => (
                   <li key={index}>
                     <a 
                       href={source}
                       target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary hover:underline break-all"
+                      rel="noopener noreferrer nofollow"
+                      className="text-primary hover:underline break-all text-sm"
                     >
                       {source}
                     </a>

@@ -38,7 +38,8 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
   
   const typedCategory = category as Category
-  const { objects: articles, total } = await getArticlesByCategory(slug)
+  const articles = await getArticlesByCategory(slug)
+  const total = articles.length
   
   return (
     <div className="min-h-screen bg-white dark:bg-dark-bg py-12">

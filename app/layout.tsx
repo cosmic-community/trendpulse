@@ -1,20 +1,80 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import './globals.css'
+import { Inter } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import CosmicBadge from '@/components/CosmicBadge'
 import ThemeProvider from '@/components/ThemeProvider'
+import CosmicBadge from '@/components/CosmicBadge'
+import StructuredData from '@/components/StructuredData'
+import type { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'TrendPulse Daily - AI-Powered Tech News',
-  description: 'Stay ahead with AI-curated technology, business, and innovation news. Autonomous journalism powered by advanced AI.',
+  metadataBase: new URL('https://trendpulsedaily.com'),
+  title: {
+    default: 'TrendPulse Daily - AI-Powered Tech News & Trends',
+    template: '%s | TrendPulse Daily',
+  },
+  description: 'Stay ahead with AI-curated tech news, trending topics, and daily insights. TrendPulse Daily delivers the most important technology stories, powered by artificial intelligence.',
+  keywords: [
+    'tech news',
+    'AI news',
+    'technology trends',
+    'artificial intelligence',
+    'tech industry',
+    'innovation',
+    'startups',
+    'tech analysis',
+    'daily tech news',
+    'AI-powered news',
+  ],
+  authors: [{ name: 'TrendPulse Daily' }],
+  creator: 'TrendPulse Daily',
+  publisher: 'TrendPulse Daily',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: 'TrendPulse Daily - AI-Powered Tech News',
-    description: 'Stay ahead with AI-curated technology, business, and innovation news.',
     type: 'website',
+    locale: 'en_US',
+    url: 'https://trendpulsedaily.com',
+    siteName: 'TrendPulse Daily',
+    title: 'TrendPulse Daily - AI-Powered Tech News & Trends',
+    description: 'Stay ahead with AI-curated tech news, trending topics, and daily insights.',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'TrendPulse Daily - AI-Powered Tech News',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TrendPulse Daily - AI-Powered Tech News & Trends',
+    description: 'Stay ahead with AI-curated tech news, trending topics, and daily insights.',
+    images: ['/twitter-image.jpg'],
+    creator: '@trendpulsedaily',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://trendpulsedaily.com',
+  },
+  verification: {
+    google: 'your-google-verification-code',
   },
 }
 
@@ -23,16 +83,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const bucketSlug = process.env.COSMIC_BUCKET_SLUG as string
+  const bucketSlug = process.env.COSMIC_BUCKET_SLUG || ''
   
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <script src="/dashboard-console-capture.js" defer></script>
+        <StructuredData />
       </head>
       <body className={inter.className}>
         <ThemeProvider>
-          <div className="min-h-screen flex flex-col">
+          <div className="flex flex-col min-h-screen bg-white dark:bg-dark-bg text-gray-900 dark:text-gray-100">
             <Header />
             <main className="flex-grow">
               {children}

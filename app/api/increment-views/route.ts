@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { incrementViewCount } from '@/lib/cosmic'
+import { incrementArticleViews } from '@/lib/cosmic'
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       )
     }
     
-    await incrementViewCount(articleId, currentViews)
+    await incrementArticleViews(articleId, currentViews)
     
     return NextResponse.json({ success: true })
   } catch (error) {
