@@ -10,13 +10,24 @@ const cosmic = createBucketClient({
 // Newsletter subscription with duplicate check and subscriber tracking
 export async function subscribeToNewsletter(email: string) {
   try {
-    // Check if email already exists
-    const existingSubscribers = await cosmic.objects
-      .find({
-        type: 'newsletter-subscribers',
-        'metadata.email': email,
-      })
-      .props(['id', 'title', 'metadata'])
+    // Check if email already exists - handle 404 as "no subscribers found"
+    let existingSubscribers
+    try {
+      existingSubscribers = await cosmic.objects
+        .find({
+          type: 'newsletter-subscribers',
+          'metadata.email': email,
+        })
+        .props(['id', 'title', 'metadata'])
+    } catch (error) {
+      // 404 means no subscribers found - this is normal, continue to create new subscriber
+      if ((error as { status?: number }).status === 404) {
+        existingSubscribers = { objects: [] }
+      } else {
+        // Re-throw other errors
+        throw error
+      }
+    }
 
     if (existingSubscribers.objects && existingSubscribers.objects.length > 0) {
       const subscriber = existingSubscribers.objects[0]
