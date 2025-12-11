@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-import { ThemeProvider } from '@/components/ThemeProvider'
+import ThemeProvider from '@/components/ThemeProvider'
 import CosmicBadge from '@/components/CosmicBadge'
 import StructuredData from '@/components/StructuredData'
 
@@ -89,6 +89,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const bucketSlug = process.env.COSMIC_BUCKET_SLUG || 'trendpulse-daily-production'
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -104,7 +106,7 @@ export default function RootLayout({
             <Header />
             <main>{children}</main>
             <Footer />
-            <CosmicBadge />
+            <CosmicBadge bucketSlug={bucketSlug} />
           </div>
         </ThemeProvider>
         <script src="/dashboard-console-capture.js" async></script>

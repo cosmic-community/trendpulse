@@ -79,7 +79,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
   
   const typedArticle = article as Article
-  const { objects: allArticles } = await getArticles(100)
+  const allArticles = await getArticles(100)
   const relatedArticles = getRelatedArticles(typedArticle, allArticles as Article[], 4)
   const readingTime = calculateReadingTime(typedArticle.metadata.content || '')
   const toc = generateTableOfContents(typedArticle.metadata.content || '')

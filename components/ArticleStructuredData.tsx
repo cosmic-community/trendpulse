@@ -1,30 +1,27 @@
+import { Article } from '@/types'
+
 interface ArticleStructuredDataProps {
-  title: string
-  description: string
-  publishDate: string
-  modifiedDate?: string
-  imageUrl?: string
-  authorName?: string
-  categories?: string[]
-  url: string
+  article: Article
 }
 
 export default function ArticleStructuredData({
-  title,
-  description,
-  publishDate,
-  modifiedDate,
-  imageUrl,
-  authorName = 'TrendPulse Daily',
-  categories = [],
-  url,
+  article,
 }: ArticleStructuredDataProps) {
+  const title = article.title
+  const description = article.metadata.excerpt || article.metadata.seo_meta_description || ''
+  const publishDate = article.metadata.publish_date
+  const modifiedDate = article.metadata.last_updated || article.metadata.publish_date
+  const imageUrl = article.metadata.featured_image?.imgix_url
+  const authorName = 'TrendPulse Daily'
+  const categories = article.metadata.categories?.map(cat => cat.title) || []
+  const url = `https://trendpulsedaily.com/articles/${article.slug}`
+
   const articleSchema = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     headline: title,
     description: description,
-    image: imageUrl || 'https://trendpulse-daily.com/default-article-image.png',
+    image: imageUrl ? `${imageUrl}?w=1200&h=630&fit=crop&auto=format,compress` : 'https://trendpulse-daily.com/default-article-image.png',
     datePublished: publishDate,
     dateModified: modifiedDate || publishDate,
     author: {

@@ -1,4 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
+import { Article, Category, Tag } from '@/types'
 
 const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -82,7 +83,7 @@ export async function getArticles(limit = 10) {
       .limit(limit)
 
     // Manual sorting by publish_date (descending - newest first)
-    const sortedArticles = response.objects.sort((a, b) => {
+    const sortedArticles = response.objects.sort((a: Article, b: Article) => {
       const dateA = new Date(a.metadata?.publish_date || a.created_at || '').getTime()
       const dateB = new Date(b.metadata?.publish_date || b.created_at || '').getTime()
       return dateB - dateA
@@ -136,6 +137,45 @@ export async function getCategories() {
   }
 }
 
+// Get a single category by slug
+export async function getCategoryBySlug(slug: string) {
+  try {
+    const { object } = await cosmic.objects
+      .findOne({
+        type: 'categories',
+        slug: slug,
+      })
+      .props(['id', 'title', 'slug', 'metadata'])
+      .depth(0)
+
+    return object
+  } catch (error) {
+    if ((error as { status?: number }).status === 404) {
+      return null
+    }
+    throw error
+  }
+}
+
+// Get tags
+export async function getTags() {
+  try {
+    const response = await cosmic.objects
+      .find({
+        type: 'tags',
+      })
+      .props(['id', 'title', 'slug', 'metadata'])
+      .depth(0)
+
+    return response.objects
+  } catch (error) {
+    if ((error as { status?: number }).status === 404) {
+      return []
+    }
+    throw error
+  }
+}
+
 // Get articles by category
 export async function getArticlesByCategory(categorySlug: string) {
   try {
@@ -147,13 +187,13 @@ export async function getArticlesByCategory(categorySlug: string) {
       .depth(1)
 
     // Filter articles that have the specified category
-    const filteredArticles = response.objects.filter((article) => {
+    const filteredArticles = response.objects.filter((article: Article) => {
       const categories = article.metadata?.categories || []
       return categories.some((cat: { slug: string }) => cat.slug === categorySlug)
     })
 
     // Manual sorting by publish_date (descending)
-    const sortedArticles = filteredArticles.sort((a, b) => {
+    const sortedArticles = filteredArticles.sort((a: Article, b: Article) => {
       const dateA = new Date(a.metadata?.publish_date || a.created_at || '').getTime()
       const dateB = new Date(b.metadata?.publish_date || b.created_at || '').getTime()
       return dateB - dateA
@@ -180,7 +220,7 @@ export async function getTrendingTopics(limit = 5) {
       .limit(limit)
 
     // Manual sorting by trend_score (descending)
-    const sortedTopics = response.objects.sort((a, b) => {
+    const sortedTopics = response.objects.sort((a: Article, b: Article) => {
       const scoreA = a.metadata?.trend_score || 0
       const scoreB = b.metadata?.trend_score || 0
       return scoreB - scoreA
@@ -211,6 +251,9 @@ export async function incrementArticleViews(articleId: string, currentViews: num
   }
 }
 
+// Alias for backward compatibility
+export const incrementViewCount = incrementArticleViews
+
 // Get related articles based on categories and tags
 export async function getRelatedArticles(articleId: string, categories: string[], tags: string[], limit = 3) {
   try {
@@ -223,8 +266,8 @@ export async function getRelatedArticles(articleId: string, categories: string[]
 
     // Filter out the current article and find articles with matching categories or tags
     const relatedArticles = response.objects
-      .filter((article) => article.id !== articleId)
-      .map((article) => {
+      .filter((article: Article) => article.id !== articleId)
+      .map((article: Article) => {
         const articleCategories = article.metadata?.categories || []
         const articleTags = article.metadata?.tags || []
         
@@ -246,10 +289,10 @@ export async function getRelatedArticles(articleId: string, categories: string[]
         
         return { article, relevanceScore }
       })
-      .filter(({ relevanceScore }) => relevanceScore > 0)
-      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .filter(({ relevanceScore }: { relevanceScore: number }) => relevanceScore > 0)
+      .sort((a: { relevanceScore: number }, b: { relevanceScore: number }) => b.relevanceScore - a.relevanceScore)
       .slice(0, limit)
-      .map(({ article }) => article)
+      .map(({ article }: { article: Article }) => article)
 
     return relatedArticles
   } catch (error) {
