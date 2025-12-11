@@ -39,7 +39,7 @@ export default async function HomePage() {
   const [heroArticle, ...gridArticles] = articles
   
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white dark:bg-dark-bg">
       {/* Hero Section */}
       {heroArticle && <Hero article={heroArticle as Article} />}
       
@@ -52,7 +52,7 @@ export default async function HomePage() {
           {/* Articles Grid */}
           <div className="lg:col-span-8">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold">Latest Tech News</h2>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Latest Tech News</h2>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 {total} articles available
               </span>
@@ -81,7 +81,7 @@ export default async function HomePage() {
                   </svg>
                   <span className="text-xs font-semibold text-primary uppercase tracking-wide">Join 10,000+ Subscribers</span>
                 </div>
-                <h3 className="text-xl font-bold mb-3">Get Weekly AI Tech Insights</h3>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Get Weekly AI Tech Insights</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Free weekly roundup of the most important tech stories. No spam, unsubscribe anytime.
                 </p>
@@ -106,7 +106,7 @@ export default async function HomePage() {
                 <div className="text-xs text-gray-500 dark:text-gray-500 mb-3 uppercase tracking-wide">
                   Sponsored
                 </div>
-                <h4 className="font-bold mb-2">Recommended Tools</h4>
+                <h4 className="font-bold mb-2 text-gray-900 dark:text-white">Recommended Tools</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Discover the best AI and tech tools to boost your productivity.
                 </p>

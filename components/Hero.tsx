@@ -20,7 +20,8 @@ export default function Hero({ article }: { article: Article }) {
             alt={article.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          {/* Changed: Adjusted gradient for better visibility in both light and dark modes */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30 dark:from-black/80 dark:via-black/40 dark:to-transparent" />
         </div>
       )}
       
@@ -38,7 +39,7 @@ export default function Hero({ article }: { article: Article }) {
           </div>
           
           {/* Title */}
-          <h1 className="text-4xl lg:text-6xl font-bold mb-4 leading-tight">
+          <h1 className="text-4xl lg:text-6xl font-bold mb-4 leading-tight drop-shadow-lg">
             <Link href={`/articles/${article.slug}`} className="hover:text-primary transition-colors">
               {article.title}
             </Link>
@@ -46,13 +47,13 @@ export default function Hero({ article }: { article: Article }) {
           
           {/* Excerpt */}
           {article.metadata.excerpt && (
-            <p className="text-xl lg:text-2xl text-gray-200 mb-6 max-w-3xl">
+            <p className="text-xl lg:text-2xl text-gray-100 mb-6 max-w-3xl drop-shadow-md">
               {article.metadata.excerpt}
             </p>
           )}
           
           {/* Meta */}
-          <div className="flex items-center gap-4 text-sm text-gray-300">
+          <div className="flex items-center gap-4 text-sm text-gray-200">
             <span>{formatDate(article.metadata.publish_date)}</span>
             {article.metadata.view_count !== undefined && (
               <>
