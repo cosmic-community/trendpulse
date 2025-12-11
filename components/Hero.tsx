@@ -12,8 +12,8 @@ export default function Hero({ article }: { article: Article }) {
   
   return (
     <section className="relative w-full h-[600px] lg:h-[700px] overflow-hidden">
-      {/* Background Image */}
-      {article.metadata.featured_image && (
+      {/* Background Image or Gradient */}
+      {article.metadata.featured_image ? (
         <div className="absolute inset-0">
           <img
             src={`${article.metadata.featured_image.imgix_url}?w=2400&h=1400&fit=crop&auto=format,compress`}
@@ -22,6 +22,12 @@ export default function Hero({ article }: { article: Article }) {
           />
           {/* Changed: Adjusted gradient for better visibility in both light and dark modes */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30 dark:from-black/80 dark:via-black/40 dark:to-transparent" />
+        </div>
+      ) : (
+        // Changed: Added elegant dark gradient background when no featured image
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 dark:from-slate-950 dark:via-blue-950 dark:to-slate-900">
+          {/* Overlay pattern for texture */}
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]" />
         </div>
       )}
       
