@@ -4,15 +4,16 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 interface WelcomeEmailProps {
   email: string
+  subscriberName?: string
 }
 
-export async function sendWelcomeEmail({ email }: WelcomeEmailProps) {
+export async function sendWelcomeEmail({ email, subscriberName }: WelcomeEmailProps) {
   try {
     const { data, error } = await resend.emails.send({
       from: 'TrendPulse Daily <tony@cosmicjs.com>',
-      to: email,
+      to: [email],
       replyTo: 'tony@cosmicjs.com',
-      subject: '🎉 Welcome to TrendPulse Daily - Your AI Tech News Source',
+      subject: '🎉 Welcome to TrendPulse Daily - Your AI Tech News Hub',
       html: `
         <!DOCTYPE html>
         <html>
@@ -21,19 +22,19 @@ export async function sendWelcomeEmail({ email }: WelcomeEmailProps) {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Welcome to TrendPulse Daily</title>
           </head>
-          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f9fafb;">
+          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f3f4f6;">
             <table role="presentation" style="width: 100%; border-collapse: collapse;">
               <tr>
                 <td align="center" style="padding: 40px 0;">
-                  <table role="presentation" style="width: 600px; max-width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                  <table role="presentation" style="width: 600px; max-width: 100%; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
                     <!-- Header -->
                     <tr>
-                      <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
-                        <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;">
-                          🚀 TrendPulse Daily
+                      <td style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 40px 30px; text-align: center;">
+                        <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">
+                          🚀 Welcome to TrendPulse Daily
                         </h1>
-                        <p style="margin: 10px 0 0; color: #e0e7ff; font-size: 16px;">
-                          AI-Powered Tech News You Can Trust
+                        <p style="margin: 10px 0 0 0; color: #e0e7ff; font-size: 16px;">
+                          Your Daily Source for AI & Tech Insights
                         </p>
                       </td>
                     </tr>
@@ -41,79 +42,58 @@ export async function sendWelcomeEmail({ email }: WelcomeEmailProps) {
                     <!-- Content -->
                     <tr>
                       <td style="padding: 40px 30px;">
-                        <h2 style="margin: 0 0 20px; color: #1f2937; font-size: 24px; font-weight: 600;">
-                          Welcome to the Community! 🎉
-                        </h2>
-                        
-                        <p style="margin: 0 0 20px; color: #4b5563; font-size: 16px; line-height: 1.6;">
-                          Thank you for subscribing to TrendPulse Daily! You've just joined 10,000+ tech enthusiasts who stay ahead of the curve.
+                        <p style="margin: 0 0 20px 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                          ${subscriberName ? `Hi ${subscriberName},` : 'Hi there,'}
+                        </p>
+                        <p style="margin: 0 0 20px 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                          Thank you for subscribing to TrendPulse Daily! 🎉 You've just joined thousands of tech enthusiasts who stay ahead of the curve with our curated AI and technology news.
                         </p>
                         
-                        <p style="margin: 0 0 20px; color: #4b5563; font-size: 16px; line-height: 1.6;">
-                          Here's what you can expect from us:
+                        <div style="background-color: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 30px 0; border-radius: 4px;">
+                          <h2 style="margin: 0 0 15px 0; color: #1e40af; font-size: 18px; font-weight: 600;">
+                            What You'll Get:
+                          </h2>
+                          <ul style="margin: 0; padding-left: 20px; color: #374151; font-size: 15px; line-height: 1.8;">
+                            <li style="margin-bottom: 10px;">📰 Daily curated tech news and AI breakthroughs</li>
+                            <li style="margin-bottom: 10px;">🔥 Trending topics and emerging technologies</li>
+                            <li style="margin-bottom: 10px;">💡 Expert insights and analysis</li>
+                            <li style="margin-bottom: 10px;">📊 Weekly roundups delivered to your inbox</li>
+                          </ul>
+                        </div>
+                        
+                        <p style="margin: 0 0 20px 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                          We respect your time and inbox. No spam, just valuable content you can trust.
                         </p>
                         
-                        <table role="presentation" style="width: 100%; border-collapse: collapse; margin: 30px 0;">
+                        <table role="presentation" style="width: 100%; margin: 30px 0;">
                           <tr>
-                            <td style="padding: 15px; background-color: #f3f4f6; border-radius: 8px; margin-bottom: 10px;">
-                              <div style="display: flex; align-items: start;">
-                                <span style="font-size: 24px; margin-right: 15px;">📰</span>
-                                <div>
-                                  <strong style="color: #1f2937; font-size: 16px;">Daily AI-Curated News</strong>
-                                  <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Breaking tech stories analyzed and summarized by AI</p>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="padding: 15px; background-color: #f3f4f6; border-radius: 8px; margin-bottom: 10px;">
-                              <div style="display: flex; align-items: start;">
-                                <span style="font-size: 24px; margin-right: 15px;">📊</span>
-                                <div>
-                                  <strong style="color: #1f2937; font-size: 16px;">Weekly Roundups</strong>
-                                  <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Comprehensive summaries of the week's top stories</p>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="padding: 15px; background-color: #f3f4f6; border-radius: 8px;">
-                              <div style="display: flex; align-items: start;">
-                                <span style="font-size: 24px; margin-right: 15px;">🔥</span>
-                                <div>
-                                  <strong style="color: #1f2937; font-size: 16px;">Trending Topics</strong>
-                                  <p style="margin: 5px 0 0; color: #6b7280; font-size: 14px;">Real-time tracking of emerging tech trends</p>
-                                </div>
-                              </div>
+                            <td align="center">
+                              <a href="https://trendpulsedaily.com" style="display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                                Visit TrendPulse Daily
+                              </a>
                             </td>
                           </tr>
                         </table>
                         
-                        <div style="text-align: center; margin: 30px 0;">
-                          <a href="https://trendpulsedaily.com" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-weight: 600; font-size: 16px;">
-                            Start Reading Now →
-                          </a>
-                        </div>
-                        
-                        <p style="margin: 30px 0 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
-                          Questions? Just reply to this email - we'd love to hear from you!
+                        <p style="margin: 30px 0 0 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                          Stay curious,<br>
+                          <strong style="color: #1e40af;">The TrendPulse Daily Team</strong>
                         </p>
                       </td>
                     </tr>
                     
                     <!-- Footer -->
                     <tr>
-                      <td style="padding: 30px; background-color: #f9fafb; border-top: 1px solid #e5e7eb;">
-                        <p style="margin: 0 0 10px; color: #6b7280; font-size: 14px; text-align: center;">
-                          TrendPulse Daily - AI-Powered Tech News
+                      <td style="background-color: #f9fafb; padding: 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+                        <p style="margin: 0 0 10px 0; color: #6b7280; font-size: 14px;">
+                          You're receiving this email because you subscribed to TrendPulse Daily
                         </p>
-                        <p style="margin: 0 0 10px; color: #9ca3af; font-size: 12px; text-align: center;">
-                          You're receiving this because you subscribed to our newsletter at trendpulsedaily.com
+                        <p style="margin: 0; color: #6b7280; font-size: 12px;">
+                          <a href="https://trendpulsedaily.com" style="color: #3b82f6; text-decoration: none;">Visit Website</a> • 
+                          <a href="#" style="color: #6b7280; text-decoration: none;">Unsubscribe</a>
                         </p>
-                        <p style="margin: 0; text-align: center;">
-                          <a href="https://trendpulsedaily.com" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Visit Website</a>
-                          <span style="color: #d1d5db;">|</span>
-                          <a href="https://trendpulsedaily.com/newsletter" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Manage Preferences</a>
+                        <p style="margin: 15px 0 0 0; color: #9ca3af; font-size: 12px;">
+                          © ${new Date().getFullYear()} TrendPulse Daily. All rights reserved.
                         </p>
                       </td>
                     </tr>
@@ -124,41 +104,60 @@ export async function sendWelcomeEmail({ email }: WelcomeEmailProps) {
           </body>
         </html>
       `,
-      text: `
-Welcome to TrendPulse Daily! 🎉
-
-Thank you for subscribing! You've just joined 10,000+ tech enthusiasts who stay ahead of the curve.
-
-Here's what you can expect:
-
-📰 Daily AI-Curated News
-Breaking tech stories analyzed and summarized by AI
-
-📊 Weekly Roundups
-Comprehensive summaries of the week's top stories
-
-🔥 Trending Topics
-Real-time tracking of emerging tech trends
-
-Start reading: https://trendpulsedaily.com
-
-Questions? Just reply to this email - we'd love to hear from you!
-
----
-TrendPulse Daily - AI-Powered Tech News
-Visit Website: https://trendpulsedaily.com
-Manage Preferences: https://trendpulsedaily.com/newsletter
-      `,
     })
 
     if (error) {
       console.error('Resend email error:', error)
-      return { success: false, error }
+      return { success: false, error: error.message }
     }
 
     return { success: true, data }
   } catch (error) {
     console.error('Failed to send welcome email:', error)
-    return { success: false, error }
+    return { success: false, error: 'Failed to send email' }
+  }
+}
+
+export async function sendAdminNotification(email: string) {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: 'TrendPulse Daily <tony@cosmicjs.com>',
+      to: ['tony@cosmicjs.com'],
+      subject: '🔔 New Newsletter Subscription',
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>New Subscriber</title>
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <h2 style="color: #1e40af; margin-top: 0;">New Newsletter Subscriber</h2>
+              <p style="color: #374151; font-size: 16px; line-height: 1.6;">
+                A new subscriber has joined TrendPulse Daily!
+              </p>
+              <div style="background-color: #f0f9ff; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                <strong style="color: #1e40af;">Email:</strong> 
+                <span style="color: #374151;">${email}</span>
+              </div>
+              <p style="color: #6b7280; font-size: 14px; margin-bottom: 0;">
+                Subscribed at: ${new Date().toLocaleString()}
+              </p>
+            </div>
+          </body>
+        </html>
+      `,
+    })
+
+    if (error) {
+      console.error('Admin notification error:', error)
+      return { success: false, error: error.message }
+    }
+
+    return { success: true, data }
+  } catch (error) {
+    console.error('Failed to send admin notification:', error)
+    return { success: false, error: 'Failed to send notification' }
   }
 }

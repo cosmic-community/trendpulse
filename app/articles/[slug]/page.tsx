@@ -79,8 +79,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   }
   
   const typedArticle = article as Article
-  const allArticles = await getArticles(100)
-  const relatedArticles = getRelatedArticles(typedArticle, allArticles as Article[], 4)
+  // Changed: Fixed to properly destructure the response
+  const allArticlesResponse = await getArticles(100)
+  const relatedArticles = getRelatedArticles(typedArticle, allArticlesResponse.objects, 4)
   const readingTime = calculateReadingTime(typedArticle.metadata.content || '')
   const toc = generateTableOfContents(typedArticle.metadata.content || '')
   const articleUrl = `https://trendpulsedaily.com/articles/${slug}`

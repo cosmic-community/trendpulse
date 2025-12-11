@@ -3,7 +3,9 @@ import { getArticles, getCategories, getTags } from '@/lib/cosmic'
 import { Article, Category, Tag } from '@/types'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = await getArticles(1000)
+  // Changed: Fixed to properly destructure the response
+  const articlesResponse = await getArticles(1000)
+  const articles = articlesResponse.objects
   const categories = await getCategories()
   const tags = await getTags()
   
