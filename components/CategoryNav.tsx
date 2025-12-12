@@ -6,7 +6,7 @@ export default function CategoryNav({ categories }: { categories: Category[] }) 
   
   return (
     <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl p-6">
-      <h3 className="text-xl font-bold mb-4">Categories</h3>
+      <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">Categories</h3>
       <ul className="space-y-2">
         {categories.map((category) => (
           <li key={category.id}>

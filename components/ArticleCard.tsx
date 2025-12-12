@@ -36,7 +36,7 @@ export default function ArticleCard({ article }: { article: Article }) {
         </div>
         
         {/* Title */}
-        <h3 className="text-xl font-bold mb-2 line-clamp-2 flex-grow">
+        <h3 className="text-xl font-bold mb-2 line-clamp-2 flex-grow text-gray-900 dark:text-white">
           <Link href={`/articles/${article.slug}`} className="hover:text-primary transition-colors">
             {article.title}
           </Link>
