@@ -1,6 +1,6 @@
 import { getArticles, getCategories, getTrendingTopics } from '@/lib/cosmic'
 import { Article, Category, TrendingTopic } from '@/types'
-import ArticleCard from '@/components/ArticleCard'
+import ArticleGrid from '@/components/ArticleGrid'
 import TrendingWidget from '@/components/TrendingWidget'
 import NewsletterForm from '@/components/NewsletterForm'
 import CategoryNav from '@/components/CategoryNav'
@@ -49,19 +49,13 @@ export default async function HomePage() {
       {/* Main Content Grid */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Articles Grid */}
+          {/* Articles Grid with Category Filter */}
           <div className="lg:col-span-8">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Latest Tech News</h2>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {total} articles available
-              </span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {gridArticles.map((article: Article) => (
-                <ArticleCard key={article.id} article={article as Article} />
-              ))}
-            </div>
+            <ArticleGrid 
+              articles={gridArticles as Article[]} 
+              categories={categories as Category[]}
+              totalArticles={total}
+            />
             
             {/* Mid-content CTA */}
             <div className="mt-12">
