@@ -52,7 +52,7 @@ export default function ArticleCard({ article }: { article: Article }) {
         {/* Meta */}
         <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-500 mt-auto">
           <span>{formatDate(article.metadata.publish_date)}</span>
-          {article.metadata.view_count !== undefined && (
+          {typeof article.metadata.view_count === 'number' && (
             <>
               <span>•</span>
               <span>{article.metadata.view_count.toLocaleString()} views</span>

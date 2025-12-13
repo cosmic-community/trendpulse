@@ -1,7 +1,11 @@
 import { Article } from '@/types'
 
 export function formatDate(dateString: string): string {
+  if (!dateString) return ''
   const date = new Date(dateString)
+  // Check for invalid date
+  if (isNaN(date.getTime())) return ''
+  
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
