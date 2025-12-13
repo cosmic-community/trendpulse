@@ -34,6 +34,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const typedArticle = article as Article
   const articleUrl = `https://trendpulsedaily.com/articles/${slug}`
   
+  // Changed: Safe image URL access with proper null checks
+  const imageUrl = typedArticle.metadata.featured_image?.imgix_url || typedArticle.metadata.featured_image?.url
+  
   return {
     title: `${typedArticle.metadata.seo_meta_title || typedArticle.title} | TrendPulse Daily`,
     description: typedArticle.metadata.seo_meta_description || typedArticle.metadata.excerpt,
@@ -47,9 +50,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       modifiedTime: typedArticle.metadata.last_updated,
       authors: ['TrendPulse Daily'],
       url: articleUrl,
-      images: typedArticle.metadata.featured_image ? [
+      images: imageUrl ? [
         {
-          url: `${typedArticle.metadata.featured_image.imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`,
+          url: `${imageUrl}?w=1200&h=630&fit=crop&auto=format,compress`,
           width: 1200,
           height: 630,
           alt: typedArticle.title,
@@ -60,8 +63,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       card: 'summary_large_image',
       title: typedArticle.metadata.seo_meta_title || typedArticle.title,
       description: typedArticle.metadata.seo_meta_description || typedArticle.metadata.excerpt,
-      images: typedArticle.metadata.featured_image ? [
-        `${typedArticle.metadata.featured_image.imgix_url}?w=1200&h=630&fit=crop&auto=format,compress`
+      images: imageUrl ? [
+        `${imageUrl}?w=1200&h=630&fit=crop&auto=format,compress`
       ] : [],
     },
     alternates: {
@@ -86,6 +89,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const toc = generateTableOfContents(typedArticle.metadata.content || '')
   const articleUrl = `https://trendpulsedaily.com/articles/${slug}`
   
+  // Changed: Safe image URL access with proper null checks
+  const imageUrl = typedArticle.metadata.featured_image?.imgix_url || typedArticle.metadata.featured_image?.url
+  
   return (
     <article className="min-h-screen bg-white dark:bg-dark-bg">
       <ArticleStructuredData article={typedArticle} />
@@ -103,10 +109,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
       
       {/* Featured Image */}
-      {typedArticle.metadata.featured_image && (
+      {imageUrl && (
         <div className="w-full h-[400px] lg:h-[500px] relative">
           <img
-            src={`${typedArticle.metadata.featured_image.imgix_url}?w=2400&h=1000&fit=crop&auto=format,compress`}
+            src={`${imageUrl}?w=2400&h=1000&fit=crop&auto=format,compress`}
             alt={typedArticle.title}
             className="w-full h-full object-cover"
           />

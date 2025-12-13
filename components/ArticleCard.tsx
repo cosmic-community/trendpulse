@@ -14,14 +14,17 @@ export default function ArticleCard({ article }: { article: Article }) {
     ? viewCount.toLocaleString() 
     : null
   
+  // Changed: Safe image URL access with proper null checks
+  const imageUrl = article.metadata.featured_image?.imgix_url || article.metadata.featured_image?.url
+  
   return (
     <article className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
       {/* Featured Image */}
-      {article.metadata.featured_image && (
+      {imageUrl && (
         <Link href={`/articles/${article.slug}`}>
           <div className="relative h-48 overflow-hidden">
             <img
-              src={`${article.metadata.featured_image.imgix_url}?w=800&h=384&fit=crop&auto=format,compress`}
+              src={`${imageUrl}?w=800&h=384&fit=crop&auto=format,compress`}
               alt={article.title}
               className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
             />
