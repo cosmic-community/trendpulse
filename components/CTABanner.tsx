@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { ArrowRight } from 'lucide-react'
 
 export default function CTABanner() {
   return (
@@ -9,13 +10,14 @@ export default function CTABanner() {
         </h3>
         <p className="text-lg mb-6 text-white/90">
           Join 10,000+ tech professionals getting AI-curated insights delivered weekly. 
-          No spam, just the stories that shape tomorrow.
+          Plus, get our free 2025 Tech Trends Report instantly.
         </p>
         <Link 
           href="/newsletter"
-          className="inline-block bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          className="inline-flex items-center gap-2 bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
         >
           Subscribe Now - It's Free
+          <ArrowRight className="w-5 h-5" />
         </Link>
         <p className="text-sm mt-4 text-white/70">
           ⚡ Instant access • 📧 Weekly delivery • 🔒 Unsubscribe anytime

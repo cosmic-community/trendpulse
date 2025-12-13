@@ -123,6 +123,11 @@ export default function Footer() {
               </a>
             </div>
           </div>
+          
+          {/* Affiliate Disclosure */}
+          <p className="text-xs text-gray-500 dark:text-gray-500 mt-4 text-center">
+            Disclosure: Some links on this site are affiliate links. We may earn a commission at no extra cost to you when you purchase through these links.
+          </p>
         </div>
       </div>
     </footer>

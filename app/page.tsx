@@ -7,6 +7,7 @@ import CategoryNav from '@/components/CategoryNav'
 import Hero from '@/components/Hero'
 import SocialProof from '@/components/SocialProof'
 import CTABanner from '@/components/CTABanner'
+import LeadMagnetBanner from '@/components/LeadMagnetBanner'
 import { Metadata } from 'next'
 
 export const revalidate = 3600 // Revalidate every hour
@@ -46,6 +47,9 @@ export default async function HomePage() {
       {/* Social Proof Banner */}
       <SocialProof />
       
+      {/* Lead Magnet Banner - High-converting placement */}
+      <LeadMagnetBanner />
+      
       {/* Main Content Grid */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -77,7 +81,7 @@ export default async function HomePage() {
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Get Weekly AI Tech Insights</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Free weekly roundup of the most important tech stories. No spam, unsubscribe anytime.
+                  Free weekly roundup of the most important tech stories. Plus, get our exclusive Tech Trends Report.
                 </p>
                 <NewsletterForm />
                 <p className="text-xs text-gray-500 dark:text-gray-500 mt-3">
@@ -95,7 +99,7 @@ export default async function HomePage() {
                 <CategoryNav categories={categories as Category[]} />
               )}
               
-              {/* Sponsored/Affiliate Section */}
+              {/* Sponsored/Affiliate Section - Revenue opportunity */}
               <div className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl p-6">
                 <div className="text-xs text-gray-500 dark:text-gray-500 mb-3 uppercase tracking-wide">
                   Sponsored
