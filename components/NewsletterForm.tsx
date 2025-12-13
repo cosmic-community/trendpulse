@@ -27,6 +27,11 @@ export default function NewsletterForm() {
         setStatus('success')
         setMessage('Successfully subscribed! Check your email.')
         setEmail('')
+        
+        // Track conversion in Google Analytics
+        if (typeof window !== 'undefined' && (window as any).trackNewsletterSignup) {
+          (window as any).trackNewsletterSignup()
+        }
       } else {
         setStatus('error')
         setMessage(data.error || 'Failed to subscribe. Please try again.')

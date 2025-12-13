@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import ThemeProvider from '@/components/ThemeProvider'
 import CosmicBadge from '@/components/CosmicBadge'
 import StructuredData from '@/components/StructuredData'
+import Analytics from '@/components/Analytics'
 import type { Metadata } from 'next'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -27,6 +28,11 @@ export const metadata: Metadata = {
     'tech analysis',
     'daily tech news',
     'AI-powered news',
+    'machine learning news',
+    'tech insights',
+    'business technology',
+    'developer news',
+    'tech newsletter',
   ],
   authors: [{ name: 'TrendPulse Daily' }],
   creator: 'TrendPulse Daily',
@@ -97,6 +103,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <StructuredData />
+        <Analytics />
       </head>
       <body className={inter.className}>
         <ThemeProvider>
