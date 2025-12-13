@@ -2,13 +2,17 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
-import { Menu, X, Moon, Sun } from 'lucide-react'
+import { Menu, X, Moon, Sun, Search } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme, resolvedTheme } = useTheme()
+  const router = useRouter()
   
   // Prevent hydration mismatch by only rendering theme toggle after mount
   useEffect(() => {
@@ -23,6 +27,16 @@ export default function Header() {
       setTheme('dark')
     } else {
       setTheme('system')
+    }
+  }
+  
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      setIsSearchOpen(false)
+      setSearchQuery('')
+      setIsMenuOpen(false)
     }
   }
   
@@ -53,6 +67,15 @@ export default function Header() {
               Newsletter
             </Link>
             
+            {/* Search Button */}
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            
             {/* Dark Mode Toggle */}
             {mounted && (
               <button
@@ -72,6 +95,14 @@ export default function Header() {
           
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 md:hidden">
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+            
             {mounted && (
               <button
                 onClick={toggleTheme}
@@ -100,6 +131,31 @@ export default function Header() {
             </button>
           </div>
         </div>
+        
+        {/* Search Bar */}
+        {isSearchOpen && (
+          <div className="py-4 border-t border-gray-200 dark:border-dark-border">
+            <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search articles..."
+                  className="w-full px-4 py-3 pl-12 bg-gray-50 dark:bg-dark-bg border border-gray-300 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-gray-900 dark:text-white"
+                  autoFocus
+                />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <button
+                  type="submit"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+                >
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
         
         {/* Mobile Menu */}
         {isMenuOpen && (
