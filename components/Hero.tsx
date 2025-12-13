@@ -10,6 +10,12 @@ export default function Hero({ article }: { article: Article }) {
   // Safe access to first category with null check
   const firstCategory = article.metadata.categories?.[0]
   
+  // Changed: Safe view count formatting with type checking
+  const viewCount = article.metadata.view_count
+  const viewCountDisplay = typeof viewCount === 'number' && !isNaN(viewCount) && viewCount > 0 
+    ? viewCount.toLocaleString() 
+    : null
+  
   return (
     <section className="relative w-full h-[600px] lg:h-[700px] overflow-hidden">
       {/* Background Image or Gradient */}
@@ -61,10 +67,10 @@ export default function Hero({ article }: { article: Article }) {
           {/* Meta */}
           <div className="flex items-center gap-4 text-sm text-gray-200">
             <span>{formatDate(article.metadata.publish_date)}</span>
-            {article.metadata.view_count != null && article.metadata.view_count > 0 && (
+            {viewCountDisplay && (
               <>
                 <span>•</span>
-                <span>{article.metadata.view_count.toLocaleString()} views</span>
+                <span>{viewCountDisplay} views</span>
               </>
             )}
           </div>

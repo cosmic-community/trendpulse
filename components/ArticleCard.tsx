@@ -8,6 +8,12 @@ export default function ArticleCard({ article }: { article: Article }) {
   // Safe access to first category with null check
   const firstCategory = article.metadata.categories?.[0]
   
+  // Changed: Safe view count formatting with type checking
+  const viewCount = article.metadata.view_count
+  const viewCountDisplay = typeof viewCount === 'number' && !isNaN(viewCount) && viewCount > 0 
+    ? viewCount.toLocaleString() 
+    : null
+  
   return (
     <article className="bg-white dark:bg-dark-surface border border-gray-200 dark:border-dark-border rounded-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full">
       {/* Featured Image */}
@@ -52,10 +58,10 @@ export default function ArticleCard({ article }: { article: Article }) {
         {/* Meta */}
         <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-500 mt-auto">
           <span>{formatDate(article.metadata.publish_date)}</span>
-          {article.metadata.view_count != null && article.metadata.view_count > 0 && (
+          {viewCountDisplay && (
             <>
               <span>•</span>
-              <span>{article.metadata.view_count.toLocaleString()} views</span>
+              <span>{viewCountDisplay} views</span>
             </>
           )}
         </div>

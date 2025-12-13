@@ -30,10 +30,10 @@ export default function SocialProof() {
     return () => clearInterval(timer)
   }, [])
 
-  // Changed: Added null checks for all toLocaleString() calls
-  const articlesDisplay = stats.articles != null ? stats.articles.toLocaleString() : '0'
-  const subscribersDisplay = stats.subscribers != null ? stats.subscribers.toLocaleString() : '0'
-  const viewsDisplay = stats.views != null ? stats.views.toLocaleString() : '0'
+  // Changed: Enhanced null checks - ensure values are numbers before calling toLocaleString()
+  const articlesDisplay = typeof stats.articles === 'number' && !isNaN(stats.articles) ? stats.articles.toLocaleString() : '0'
+  const subscribersDisplay = typeof stats.subscribers === 'number' && !isNaN(stats.subscribers) ? stats.subscribers.toLocaleString() : '0'
+  const viewsDisplay = typeof stats.views === 'number' && !isNaN(stats.views) ? stats.views.toLocaleString() : '0'
 
   return (
     <div className="bg-gradient-to-r from-primary/5 to-blue-600/5 dark:from-primary/10 dark:to-blue-600/10 border-y border-gray-200 dark:border-dark-border">
