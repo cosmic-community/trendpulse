@@ -108,16 +108,29 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         />
       </div>
       
-      {/* Featured Image */}
-      {imageUrl && (
-        <div className="w-full h-[400px] lg:h-[500px] relative">
+      {/* Featured Image or Gradient Fallback */}
+      <div className="w-full h-[400px] lg:h-[500px] relative">
+        {imageUrl ? (
           <img
             src={`${imageUrl}?w=2400&h=1000&fit=crop&auto=format,compress`}
             alt={typedArticle.title}
             className="w-full h-full object-cover"
           />
-        </div>
-      )}
+        ) : (
+          // Changed: Added gradient fallback for articles without images
+          <div className="w-full h-full bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 flex items-center justify-center">
+            <div className="text-center px-8 max-w-4xl">
+              <svg className="w-24 h-24 mx-auto mb-6 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+              </svg>
+              <h1 className="text-3xl lg:text-5xl font-bold text-white mb-4">{typedArticle.title}</h1>
+              {typedArticle.metadata.excerpt && (
+                <p className="text-xl text-white/90">{typedArticle.metadata.excerpt}</p>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
       
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
@@ -132,13 +145,15 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             )}
             
-            {/* Title */}
-            <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-              {typedArticle.title}
-            </h1>
+            {/* Title - Only show if image exists (otherwise it's in the hero) */}
+            {imageUrl && (
+              <h1 className="text-4xl lg:text-5xl font-bold mb-4">
+                {typedArticle.title}
+              </h1>
+            )}
             
-            {/* Excerpt */}
-            {typedArticle.metadata.excerpt && (
+            {/* Excerpt - Only show if image exists (otherwise it's in the hero) */}
+            {imageUrl && typedArticle.metadata.excerpt && (
               <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
                 {typedArticle.metadata.excerpt}
               </p>
