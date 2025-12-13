@@ -30,25 +30,30 @@ export default function SocialProof() {
     return () => clearInterval(timer)
   }, [])
 
+  // Changed: Added null checks for all toLocaleString() calls
+  const articlesDisplay = stats.articles != null ? stats.articles.toLocaleString() : '0'
+  const subscribersDisplay = stats.subscribers != null ? stats.subscribers.toLocaleString() : '0'
+  const viewsDisplay = stats.views != null ? stats.views.toLocaleString() : '0'
+
   return (
     <div className="bg-gradient-to-r from-primary/5 to-blue-600/5 dark:from-primary/10 dark:to-blue-600/10 border-y border-gray-200 dark:border-dark-border">
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-3 gap-8 text-center">
           <div>
             <div className="text-3xl lg:text-4xl font-bold text-primary mb-1">
-              {stats.articles.toLocaleString()}+
+              {articlesDisplay}+
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">AI Articles Published</div>
           </div>
           <div>
             <div className="text-3xl lg:text-4xl font-bold text-primary mb-1">
-              {stats.subscribers.toLocaleString()}+
+              {subscribersDisplay}+
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Newsletter Subscribers</div>
           </div>
           <div>
             <div className="text-3xl lg:text-4xl font-bold text-primary mb-1">
-              {stats.views.toLocaleString()}+
+              {viewsDisplay}+
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">Monthly Readers</div>
           </div>

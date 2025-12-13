@@ -61,7 +61,7 @@ export default function Hero({ article }: { article: Article }) {
           {/* Meta */}
           <div className="flex items-center gap-4 text-sm text-gray-200">
             <span>{formatDate(article.metadata.publish_date)}</span>
-            {article.metadata.view_count !== undefined && (
+            {article.metadata.view_count != null && article.metadata.view_count > 0 && (
               <>
                 <span>•</span>
                 <span>{article.metadata.view_count.toLocaleString()} views</span>

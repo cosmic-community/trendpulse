@@ -11,16 +11,19 @@ export default function TrendingWidget({ topics }: { topics: TrendingTopic[] }) 
         Trending Topics
       </h3>
       <ul className="space-y-3">
-        {topics.map((topic) => (
-          <li key={topic.id} className="flex items-center gap-3">
-            <span className="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm font-bold">
-              {topic.metadata.trend_score}
-            </span>
-            <span className="text-sm font-medium line-clamp-2 text-gray-700 dark:text-gray-300">
-              {topic.title}
-            </span>
-          </li>
-        ))}
+        {topics.map((topic) => {
+          const trendScore = topic.metadata.trend_score ?? 0
+          return (
+            <li key={topic.id} className="flex items-center gap-3">
+              <span className="flex-shrink-0 w-8 h-8 bg-accent/10 text-accent rounded-full flex items-center justify-center text-sm font-bold">
+                {trendScore}
+              </span>
+              <span className="text-sm font-medium line-clamp-2 text-gray-700 dark:text-gray-300">
+                {topic.title}
+              </span>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

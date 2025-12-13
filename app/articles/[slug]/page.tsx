@@ -145,7 +145,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </time>
               <span>•</span>
               <span>{readingTime} min read</span>
-              {typedArticle.metadata.view_count !== undefined && (
+              {typedArticle.metadata.view_count != null && typedArticle.metadata.view_count > 0 && (
                 <>
                   <span>•</span>
                   <span>{typedArticle.metadata.view_count.toLocaleString()} views</span>
