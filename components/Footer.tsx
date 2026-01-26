@@ -82,7 +82,7 @@ export default function Footer() {
             </ul>
           </div>
           
-          {/* Legal & Resources */}
+          {/* Legal & Resources - Changed: Updated Contact Us to use Link */}
           <div>
             <h3 className="font-bold mb-4">Resources</h3>
             <ul className="space-y-2 text-sm">
@@ -97,9 +97,9 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">
+                <Link href="/contact" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">
                   Contact Us
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="/advertise" className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors">
